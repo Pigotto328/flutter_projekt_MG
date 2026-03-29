@@ -54,20 +54,40 @@ class TaskCard extends StatelessWidget {
   final String title;
   final String deadline;
   final IconData icon;
+
   const TaskCard({
     super.key,
     required this.title,
     required this.deadline,
     required this.icon,
   });
+
   @override
   Widget build(BuildContext context) {
     return Card(
-      child: ListTile(
-        leading: Icon(icon),
-        title: Text(title),
-        subtitle: Text(deadline),
+      margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+      elevation: 4,
+      child: Padding(padding: const EdgeInsets.all(16.0),
+          child: Row(children: [
+              Icon(icon, size: 32, color: Colors.blue),
+      const SizedBox(width: 16),
+      Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(title,
+            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold,
+            ),
+          ),
+          const SizedBox(height: 8),
+          Text(deadline,
+            style: TextStyle(fontSize: 14, color: Colors.grey,
+            ),
+          ),
+        ],
       ),
+      ),
+      ],
+    ),)
+    ,
     );
   }
 }
