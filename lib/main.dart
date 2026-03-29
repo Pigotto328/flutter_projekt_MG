@@ -19,25 +19,33 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
         title: 'Flutter Demo',
-        home: Column(
-          children: [
-            Text("ZADANIE",
+        home: Scaffold(
+          body: SafeArea(
+            child: Column(
+              children: [
+                const Padding(padding: EdgeInsets.all(16),
+                child: Text("Zadanie",
                 style: TextStyle(
                   fontSize: 64,
                   fontWeight: FontWeight.bold,
-                )),
-            Expanded(child: ListView.builder(
-              itemCount: tasks.length,
-              itemBuilder: (context, index) {
-                return TaskCard(
-                    title: tasks[index].title,
-                    deadline: tasks[index].deadline,
-                    icon: tasks[index].icon
-                );
-              },
-            ))
-          ],
-        )
+                ),
+                ),
+          ),
+                Expanded(child: ListView.builder(
+                  itemCount: tasks.length,
+                  itemBuilder: (context, index) {
+                    return TaskCard(
+                      title: tasks[index].title,
+                      deadline: tasks[index].deadline,
+                      icon: tasks[index].icon,
+                    );
+                  },
+                ),
+                )
+            ],
+            ),
+          ),
+        ),
     );
   }
 }
