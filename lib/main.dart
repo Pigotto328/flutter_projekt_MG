@@ -5,13 +5,23 @@ void main() {
   runApp(const MyApp());
 }
 
-class MyApp extends StatefulWidget {
+class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
   @override
-  State<MyApp> createState() => _MyAppState();}
-
-class _MyAppState extends State<MyApp>{
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'krakflow',
+        home: Homescreen(),
+    );
+  }
+  }
+class Homescreen extends StatefulWidget{
+  const Homescreen({super.key});
+  @override
+  State<Homescreen> createState() => _MyAppState();
+}
+class _MyAppState extends State<Homescreen>{
 
 
   @override
@@ -68,7 +78,14 @@ class _MyAppState extends State<MyApp>{
           ),
         ),
         floatingActionButton: FloatingActionButton(
-          onPressed: () {},
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => AddTaskScreen(),
+              ),
+            );
+          },
           child: Icon(Icons.add),
         ),
       ),
@@ -76,6 +93,20 @@ class _MyAppState extends State<MyApp>{
   }
 }
 
+class AddTaskScreen extends StatelessWidget {
+  const AddTaskScreen({super.key});
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("Nowe zadanie"),
+      ),
+      body: Center(
+        child: Text("Tutaj będzie formularz dodawania taska"),
+      ),
+    );
+  }
+}
 
 
 class TaskCard extends StatelessWidget {
