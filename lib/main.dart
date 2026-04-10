@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'task_repository.dart';
 
 void main() {
   runApp(const MyApp());
@@ -12,35 +13,10 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp>{
 
-  final List<Task> tasks = const [
-    Task(
-      title: "Projekt Flutter",
-      deadline: "jutro",
-      done: true,
-      priority: "wysoki",
-    ),
-    Task(
-      title: "Ćwiczenia z matematyki",
-      deadline: "dzisiaj",
-      done: false,
-      priority: "średni",
-    ),
-    Task(
-      title: "Przeczytać o widgetach",
-      deadline: "w tym tygodniu",
-      done: true,
-      priority: "niski",
-    ),
-    Task(
-      title: "Przygotowanie do kolosa",
-      deadline: "za 2 tygodnie",
-      done: false,
-      priority: "wysoki",
-    ),
-  ];
+
   @override
   Widget build(BuildContext context) {
-    final int completedTasks = tasks.where((task) => task.done).length;
+    final int completedTasks = TaskRepository.tasks.where((task) => task.done).length;
     return MaterialApp(
       title: 'Flutter Demo',
       home: Scaffold(
@@ -56,7 +32,7 @@ class _MyAppState extends State<MyApp>{
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      "masz ${tasks.length} zadań, wykonano $completedTasks",
+                      "masz ${TaskRepository.tasks.length} zadań, wykonano $completedTasks",
                       style: const TextStyle(
                         color: Colors.black,
                         fontWeight: FontWeight.bold,
@@ -77,13 +53,13 @@ class _MyAppState extends State<MyApp>{
 
               Expanded(
                 child: ListView.builder(
-                  itemCount: tasks.length,
+                  itemCount: TaskRepository.tasks.length,
                   itemBuilder: (context, index) {
                     return TaskCard(
-                      title: tasks[index].title,
-                      deadline: tasks[index].deadline,
-                      done: tasks[index].done,
-                      priority: tasks[index].priority,
+                      title: TaskRepository.tasks[index].title,
+                      deadline: TaskRepository.tasks[index].deadline,
+                      done: TaskRepository.tasks[index].done,
+                      priority: TaskRepository.tasks[index].priority,
                     );
                   },
                 ),
@@ -100,19 +76,7 @@ class _MyAppState extends State<MyApp>{
   }
 }
 
-class Task {
-  final String title;
-  final String deadline;
-  final bool done;
-  final String priority;
 
-  const Task({
-    required this.title,
-    required this.deadline,
-    required this.done,
-    required this.priority,
-  });
-}
 
 class TaskCard extends StatelessWidget {
   final String title;
