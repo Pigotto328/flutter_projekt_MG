@@ -4,8 +4,13 @@ void main() {
   runApp(const MyApp());
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({super.key});
+
+  @override
+  State<MyApp> createState() => _MyAppState();}
+
+class _MyAppState extends State<MyApp>{
 
   final List<Task> tasks = const [
     Task(
@@ -33,7 +38,6 @@ class MyApp extends StatelessWidget {
       priority: "wysoki",
     ),
   ];
-
   @override
   Widget build(BuildContext context) {
     final int completedTasks = tasks.where((task) => task.done).length;
