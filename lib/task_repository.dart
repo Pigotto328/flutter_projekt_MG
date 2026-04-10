@@ -12,7 +12,7 @@ class Task {
   });
 }
 class TaskRepository {
-  static List<Task> tasks = const [
+  static List<Task> tasks = [
     Task(
       title: "Projekt Flutter",
       deadline: "jutro",

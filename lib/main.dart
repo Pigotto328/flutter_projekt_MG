@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'task_repository.dart';
-
+import 'AddTaskScreen.dart';
 void main() {
   runApp(const MyApp());
 }
@@ -19,17 +19,15 @@ class MyApp extends StatelessWidget {
 class Homescreen extends StatefulWidget{
   const Homescreen({super.key});
   @override
-  State<Homescreen> createState() => _MyAppState();
+  State<Homescreen> createState() => _Homescreen();
 }
-class _MyAppState extends State<Homescreen>{
+class _Homescreen extends State<Homescreen>{
 
 
   @override
   Widget build(BuildContext context) {
     final int completedTasks = TaskRepository.tasks.where((task) => task.done).length;
-    return MaterialApp(
-      title: 'Flutter Demo',
-      home: Scaffold(
+    return Scaffold(
         appBar: AppBar(
           title: Text("krakflow")),
         body: Center(
@@ -78,36 +76,24 @@ class _MyAppState extends State<Homescreen>{
           ),
         ),
         floatingActionButton: FloatingActionButton(
-          onPressed: () {
-            Navigator.push(
+          onPressed: () async {
+            final Task? newTask = await Navigator.push(
               context,
               MaterialPageRoute(
                 builder: (context) => AddTaskScreen(),
               ),
             );
+            if (newTask != null){
+              setState((){
+                TaskRepository.tasks.add(newTask);
+              });
+            }
           },
           child: Icon(Icons.add),
         ),
-      ),
-    );
+      );
   }
 }
-
-class AddTaskScreen extends StatelessWidget {
-  const AddTaskScreen({super.key});
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text("Nowe zadanie"),
-      ),
-      body: Center(
-        child: Text("Tutaj będzie formularz dodawania taska"),
-      ),
-    );
-  }
-}
-
 
 class TaskCard extends StatelessWidget {
   final String title;
