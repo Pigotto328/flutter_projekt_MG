@@ -40,7 +40,9 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       home: Scaffold(
-        body: SafeArea(
+        appBar: AppBar(
+          title: Text("krakflow")),
+        body: Center(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -50,7 +52,7 @@ class MyApp extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      "masz dziś ${tasks.length} zadania, wykonano $completedTasks",
+                      "masz ${tasks.length} zadań, wykonano $completedTasks",
                       style: const TextStyle(
                         color: Colors.black,
                         fontWeight: FontWeight.bold,
@@ -68,6 +70,7 @@ class MyApp extends StatelessWidget {
                 ),
               ),
 
+
               Expanded(
                 child: ListView.builder(
                   itemCount: tasks.length,
@@ -83,6 +86,10 @@ class MyApp extends StatelessWidget {
               ),
             ],
           ),
+        ),
+        floatingActionButton: FloatingActionButton(
+          onPressed: () {},
+          child: Icon(Icons.add),
         ),
       ),
     );
