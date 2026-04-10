@@ -79,8 +79,16 @@ class _Homescreen extends State<Homescreen>{
           onPressed: () async {
             final Task? newTask = await Navigator.push(
               context,
-              MaterialPageRoute(
-                builder: (context) => AddTaskScreen(),
+              PageRouteBuilder(
+                transitionDuration: Duration(milliseconds: 250),
+                pageBuilder: (context, animation, secondaryAnimation) => AddTaskScreen(),
+                transitionsBuilder: (context, animation, secondaryAnimation, child) {
+                  return FadeTransition(
+                  opacity: animation,
+                  child: child
+                  );
+              },
+
               ),
             );
             if (newTask != null){
