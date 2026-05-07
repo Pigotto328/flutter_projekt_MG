@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'task_repository.dart';
 import 'AddTaskScreen.dart';
 import 'EditTaskScreen.dart';
+import 'TaskApiService.dart';
 
 void main() {
   runApp(const MyApp());
@@ -24,17 +25,25 @@ class Homescreen extends StatefulWidget {
   @override
   State<Homescreen> createState() => _Homescreen();
 }
+
 class _Homescreen extends State<Homescreen> {
   String selectedFilter = "wszystkie";
+  late Future<List<Task>> tasksFuture;
+
+  @override
+  void initState() {
+    super.initState();
+    tasksFuture = _loadInitialData();
+  }
+  Future<List<Task>> _loadInitialData() async {
+    final apiTasks = await TaskApiService.fetchTasks();
+    TaskRepository.tasks.addAll(apiTasks);
+    return TaskRepository.tasks;
+  }
+
   @override
   Widget build(BuildContext context) {
     final int completedTasks = TaskRepository.tasks.where((task) => task.done).length;
-    List<Task> filteredTasks = TaskRepository.tasks;
-    if (selectedFilter == "wykonane") {
-      filteredTasks = TaskRepository.tasks.where((task) => task.done).toList();
-    } else if (selectedFilter == "do zrobienia") {
-      filteredTasks = TaskRepository.tasks.where((task) => !task.done).toList();
-    }
 
     return Scaffold(
       appBar: AppBar(
@@ -145,58 +154,79 @@ class _Homescreen extends State<Homescreen> {
               ),
             ),
             Expanded(
-              child: ListView.builder(
-                itemCount: filteredTasks.length,
-                itemBuilder: (context, index) {
-                  final task = filteredTasks[index];
-                  return Dismissible(
-                    key: ValueKey(task.title),
-                    direction: DismissDirection.endToStart,
-                    onDismissed: (direction) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text("Zadanie usunięte"),
+              child: FutureBuilder<List<Task>>(
+                future: tasksFuture,
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(child: CircularProgressIndicator());
+                  }
+                  if (snapshot.hasError) {
+                    return Center(
+                      child: Text(
+                        "Błąd: ${snapshot.error}",
+                        style: const TextStyle(color: Colors.red),
+                      ),
+                    );
+                  }
+                  List<Task> filteredTasks = TaskRepository.tasks;
+                  if (selectedFilter == "wykonane") {
+                    filteredTasks = TaskRepository.tasks.where((task) => task.done).toList();
+                  } else if (selectedFilter == "do zrobienia") {
+                    filteredTasks = TaskRepository.tasks.where((task) => !task.done).toList();
+                  }
+
+                  return ListView.builder(
+                    itemCount: filteredTasks.length,
+                    itemBuilder: (context, index) {
+                      final task = filteredTasks[index];
+                      return Dismissible(
+                        key: ValueKey(task.title + index.toString()),
+                        direction: DismissDirection.endToStart,
+                        onDismissed: (direction) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(content: Text("Zadanie usunięte")),
+                          );
+                          setState(() {
+                            TaskRepository.tasks.remove(task);
+                          });
+                        },
+                        child: TaskCard(
+                          title: task.title,
+                          deadline: task.deadline,
+                          done: task.done,
+                          priority: task.priority,
+                          onChanged: (value) {
+                            setState(() {
+                              int realIndex = TaskRepository.tasks.indexOf(task);
+                              if (realIndex != -1) {
+                                TaskRepository.tasks[realIndex] = Task(
+                                  title: task.title,
+                                  deadline: task.deadline,
+                                  done: value ?? false,
+                                  priority: task.priority,
+                                );
+                              }
+                            });
+                          },
+                          onTap: () async {
+                            final Task? updatedTask = await Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => EditTaskScreen(task: task),
+                              ),
+                            );
+                            if (updatedTask != null) {
+                              setState(() {
+                                int realIndex = TaskRepository.tasks.indexOf(task);
+                                if (realIndex != -1) {
+                                  TaskRepository.tasks[realIndex] = updatedTask;
+                                }
+                              });
+                            }
+                          },
                         ),
                       );
-                      setState(() {
-                        TaskRepository.tasks.remove(task);
-                      });
                     },
-                    child: TaskCard(
-                      title: task.title,
-                      deadline: task.deadline,
-                      done: task.done,
-                      priority: task.priority,
-                      onChanged: (value) {
-                        setState(() {
-                          int realIndex = TaskRepository.tasks.indexOf(task);
-                          if (realIndex != -1) {
-                            TaskRepository.tasks[realIndex] = Task(
-                              title: task.title,
-                              deadline: task.deadline,
-                              done: value ?? false,
-                              priority: task.priority,
-                            );
-                          }
-                        });
-                      },
-                      onTap: () async {
-                        final Task? updatedTask = await Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => EditTaskScreen(task: task),
-                          ),
-                        );
-                        if (updatedTask != null) {
-                          setState(() {
-                            int realIndex = TaskRepository.tasks.indexOf(task);
-                            if (realIndex != -1) {
-                              TaskRepository.tasks[realIndex] = updatedTask;
-                            }
-                          });
-                        }
-                      },
-                    ),
                   );
                 },
               ),
