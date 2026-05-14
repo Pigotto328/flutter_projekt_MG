@@ -83,6 +83,7 @@ class _EditTaskScreenState extends State<EditTaskScreen> {
                 child: ElevatedButton(
                   onPressed: () {
                     final updatedTask = Task(
+                      id: widget.task.id,
                       title: titleController.text,
                       deadline: deadlineController.text,
                       done: isDone,

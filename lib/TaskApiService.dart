@@ -12,13 +12,13 @@ class TaskApiService {
     if (response.statusCode == 200) {
       final Map<String, dynamic> data = json.decode(response.body);
       final List<dynamic> todos = data['todos'];
-
       final List<String> priorities = ['wysoki', 'średni', 'niski'];
       final List<String> deadlines = ['dzisiaj', 'jutro', 'za tydzień', 'brak'];
       final Random random = Random();
 
       return todos.map((json) {
         return Task(
+          id: json['id'],
           title: json['todo'],
           done: json['completed'],
           priority: priorities[random.nextInt(priorities.length)],

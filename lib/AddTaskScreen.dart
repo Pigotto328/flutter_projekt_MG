@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'task_repository.dart';
-//
+import 'dart:math';
 class AddTaskScreen extends StatelessWidget {
   AddTaskScreen({super.key});
   final TextEditingController titleController = TextEditingController();
@@ -49,14 +49,15 @@ class AddTaskScreen extends StatelessWidget {
             ),
             ElevatedButton(onPressed: () {
               final newTask = Task(
-                title: titleController.text,
-                deadline: deadlineController.text,
-                done: false,
-                priority: priorityController.text
+                  id: Random().nextInt(1000000),
+                  title: titleController.text,
+                  deadline: deadlineController.text,
+                  done: false,
+                  priority: priorityController.text
               );
               Navigator.pop(context, newTask);
             },
-                child: Text("zapisz")
+                child: const Text("zapisz")
             ),
           ],
         ),
